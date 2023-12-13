@@ -4,4 +4,9 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Doordash.Data\Doordash.Data.csproj" />
+    <ProjectReference Include="..\Doordash.Persistance\Doordash.Persistance.csproj" />
+  </ItemGroup>
+
 </Project>
