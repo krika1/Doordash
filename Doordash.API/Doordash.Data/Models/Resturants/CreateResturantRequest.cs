@@ -10,8 +10,6 @@
 
         public string Town { get; set; }
 
-        public string AddressType { get; set; }
-
         public string AreaCode { get; set; }
 
         public string StreetAddress { get; set; }
