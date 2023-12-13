@@ -1,4 +1,5 @@
 ﻿using Doordash.Data.Entities;
+using Doordash.Data.Helpers;
 using Doordash.Data.Models.Resturants;
 using System;
 
@@ -16,7 +17,7 @@ namespace Doordash.Data.Models.Addresses
                 ResturantId = resturantId,
                 StreetAddress = request.StreetAddress,
                 Town = request.Town,
-                Type = request.AddressType
+                Type = AddressTypeHelper.GetString(AddressType.Business)
             };
         }
 
