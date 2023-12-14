@@ -1,8 +1,10 @@
 ﻿using Doordash.Data;
 using Doordash.Data.Entities;
 using Doordash.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Doordash.Persistance.Interfaces
@@ -20,7 +22,7 @@ namespace Doordash.Persistance.Interfaces
 
         public async Task<Resturant> CreateResturant(Resturant resturant)
         {
-            _logger.LogInformation($"Creating resturant with id: {resturant.Id}");
+            _logger.LogInformation($"Creating resturant with id: {resturant.Id}.");
 
             try
             {
@@ -37,9 +39,26 @@ namespace Doordash.Persistance.Interfaces
             }
         }
 
+        public async Task<IEnumerable<Resturant>> GetAllResturants()
+        {
+            _logger.LogInformation($"Getting all resturants.");
+
+            try
+            {
+                var resturants = await _database.Resturants.AsNoTracking().ToListAsync();
+
+                return resturants;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
         public async Task UpdateResturant(Resturant resturant)
         {
-            _logger.LogInformation($"Updating resturant with id: {resturant.Id}");
+            _logger.LogInformation($"Updating resturant with id: {resturant.Id}.");
 
             try
             {

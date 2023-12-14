@@ -1,6 +1,7 @@
 ﻿using Doordash.Data;
 using Doordash.Data.Entities;
 using Doordash.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace Doordash.Persistance.Interfaces
         }
         public async Task<Address> CreateAddress(Address address)
         {
-            _logger.LogInformation($"Creating address with id: {address.Id}");
+            _logger.LogInformation($"Creating address with id: {address.Id}.");
 
             try
             {
@@ -28,6 +29,23 @@ namespace Doordash.Persistance.Interfaces
                 await _database.SaveChangesAsync();
 
                 return entry.Entity;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<Address> GetAddressByResturantId(Guid resturantId)
+        {
+            _logger.LogInformation($"Getting address with for resturant with resturant Id: {resturantId}.");
+
+            try
+            {
+                var address = await _database.Addresses.FirstOrDefaultAsync(address => address.ResturantId.Equals(resturantId));
+
+                return address;
             }
             catch (Exception ex)
             {
