@@ -1,4 +1,5 @@
 ﻿using Doordash.Data.Entities;
+using Doordash.Data.Models.Addresses;
 using System;
 
 namespace Doordash.Data.Models.Resturants
@@ -35,6 +36,7 @@ namespace Doordash.Data.Models.Resturants
         {
             return resturant is null ? null : new ResturantModel
             {
+                Address = AddressFactory.ToModel(resturant.Address),
                 DeletedOn = resturant.DeletedOn,
                 Description = resturant.Description,
                 CreatedOn = resturant.CreatedOn,

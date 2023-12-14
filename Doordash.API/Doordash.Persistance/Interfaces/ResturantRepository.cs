@@ -40,15 +40,20 @@ namespace Doordash.Persistance.Interfaces
             }
         }
 
-        public async Task<IEnumerable<Resturant>> GetAllResturants()
+        public async Task<IEnumerable<Resturant>> GetAllResturants(string town)
         {
             _logger.LogInformation($"Getting all resturants.");
 
             try
             {
-                var resturants = await _database.Resturants.Where(resturant => resturant.DeletedOn == null).AsNoTracking().ToListAsync();
+                var resturants = _database.Resturants.Where(resturant => resturant.DeletedOn == null).Include(resturant => resturant.Address).AsNoTracking();
 
-                return resturants;
+                if (!string.IsNullOrWhiteSpace(town))
+                {
+                    resturants = resturants.Where(res => res.Address.Town.Equals(town));
+                }
+                
+                return await resturants.ToListAsync();
             }
             catch (Exception ex)
             {
@@ -63,7 +68,7 @@ namespace Doordash.Persistance.Interfaces
 
             try
             {
-                var resturant = await _database.Resturants.AsNoTracking().FirstOrDefaultAsync(resturant => resturant.Id.Equals(resturantId));
+                var resturant = await _database.Resturants.AsNoTracking().Include(resturant => resturant.Address).FirstOrDefaultAsync(resturant => resturant.Id.Equals(resturantId));
 
                 return resturant;
             }

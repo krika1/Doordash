@@ -53,30 +53,16 @@ namespace Doordash.Bussines.Services
             }
         }
 
-        public async Task<IEnumerable<ResturantModel>> GetAllResturantsAsync()
+        public async Task<IEnumerable<ResturantModel>> GetAllResturantsAsync(string town)
         {
-            var resturants = await _resturantRepository.GetAllResturants();
+            var resturants = await _resturantRepository.GetAllResturants(town);
 
             var resturantModels = resturants
                 .Select(resturant => ResturantFactory
                 .ToModel(resturant))
                 .ToList();
 
-            foreach (var resturantModel in resturantModels)
-            {
-                var addressModel = await GetResturantAddress(resturantModel.Id);
-
-                resturantModel.Address = addressModel;
-            }
-
             return resturantModels;
-        }
-
-        private async Task<AddressModel> GetResturantAddress(Guid resturantId)
-        {
-            var resturantAddress = await _addressRepository.GetAddressByResturantId(resturantId);
-
-            return AddressFactory.ToModel(resturantAddress);
         }
 
         private async Task AttachAddressIdToResturant(Resturant resturant, Guid addressId)
@@ -93,9 +79,6 @@ namespace Doordash.Bussines.Services
             if (resturant is null) return null;
 
             var resturantModel = ResturantFactory.ToModel(resturant);
-            var resturantAddress = await GetResturantAddress(resturantId);
-
-            resturantModel.Address = resturantAddress;
 
             return resturantModel;
         }

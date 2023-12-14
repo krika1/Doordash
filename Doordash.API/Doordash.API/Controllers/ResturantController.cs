@@ -42,11 +42,11 @@ namespace Doordash.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<ResturantModel>>> GetResturantsAsync()
+        public async Task<ActionResult<IEnumerable<ResturantModel>>> GetResturantsAsync([FromQuery] string town)
         {
             try
             {
-                var resturantModels = await _resturantService.GetAllResturantsAsync();
+                var resturantModels = await _resturantService.GetAllResturantsAsync(town);
 
                 return Ok(resturantModels);
             }
