@@ -1,4 +1,5 @@
 ﻿using Doordash.Data.Entities;
+using Doordash.Data.Exceptions;
 using Doordash.Data.Interfaces;
 using Doordash.Data.Models.Addresses;
 using Doordash.Data.Models.Resturants;
@@ -74,22 +75,29 @@ namespace Doordash.Bussines.Services
 
         public async Task<ResturantModel> GetResturantByIdAsync(Guid resturantId)
         {
-            var resturant = await _resturantRepository.GetSingleResturant(resturantId);
-
-            if (resturant is null) return null;
+            var resturant = await GetResturantById(resturantId);
 
             var resturantModel = ResturantFactory.ToModel(resturant);
 
             return resturantModel;
         }
 
-        public async Task DeleteResturantAsync(ResturantModel model)
+        public async Task DeleteResturantAsync(Guid resturantId)
         {
-            var resturant = ResturantFactory.ToDomain(model); 
+            var resturant = await GetResturantById(resturantId);
             resturant.DeletedOn = DateTime.Now;
 
             await _addressRepository.DeleteAddress(resturant.AddressId);
             await _resturantRepository.UpdateResturant(resturant);
+        }
+
+        private async Task<Resturant> GetResturantById(Guid resturantId)
+        {
+            var resturant = await _resturantRepository.GetSingleResturant(resturantId);
+
+            if (resturant is null) throw new NotFoundException($"Resturant with id: {resturantId} not found.");
+
+            return resturant;
         }
     }
 }

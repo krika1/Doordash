@@ -1,4 +1,6 @@
-﻿using Doordash.Data.Models.Resturants;
+﻿using Doordash.Data.Exceptions;
+using Doordash.Data.Models;
+using Doordash.Data.Models.Resturants;
 using Doordash.Data.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,8 +34,18 @@ namespace Doordash.API.Controllers
 
                 return Ok(resturantModel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                var errorModel = new ErrorModel
+                {
+                    Title = "Create Resturant Failed",
+                    Details = ex.Message,
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+                return new ObjectResult(errorModel)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
                 throw;
             }
         }
@@ -50,8 +62,18 @@ namespace Doordash.API.Controllers
 
                 return Ok(resturantModels);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                var errorModel = new ErrorModel
+                {
+                    Title = "Get All Resturants Failed",
+                    Details = ex.Message,
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+                return new ObjectResult(errorModel)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
                 throw;
             }
         }
@@ -67,12 +89,34 @@ namespace Doordash.API.Controllers
             {
                 var resturantModel = await _resturantService.GetResturantByIdAsync(resturantId);
 
-                if (resturantModel is null) return NotFound();
-
                 return Ok(resturantModel);
             }
-            catch (Exception)
+            catch (NotFoundException ex)
             {
+                var errorModel = new ErrorModel
+                {
+                    Title = "Resturant not found.",
+                    Details = ex.Message,
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+                return new ObjectResult(errorModel)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+                throw;
+            }
+            catch (Exception ex)
+            {
+                var errorModel = new ErrorModel
+                {
+                    Title = "Get Single Resturant Failed",
+                    Details = ex.Message,
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+                return new ObjectResult(errorModel)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
                 throw;
             }
         }
@@ -86,16 +130,36 @@ namespace Doordash.API.Controllers
         {
             try
             {
-                var resturantModel = await _resturantService.GetResturantByIdAsync(resturantId);
-
-                if (resturantModel is null) return NotFound();
-
-                await _resturantService.DeleteResturantAsync(resturantModel);
+                await _resturantService.DeleteResturantAsync(resturantId);
 
                 return NoContent();
             }
-            catch (Exception)
+            catch (NotFoundException ex)
             {
+                var errorModel = new ErrorModel
+                {
+                    Title = "Resturant not found.",
+                    Details = ex.Message,
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+                return new ObjectResult(errorModel)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+                throw;
+            }
+            catch (Exception ex)
+            {
+                var errorModel = new ErrorModel
+                {
+                    Title = "Delete Resturant Failed",
+                    Details = ex.Message,
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+                return new ObjectResult(errorModel)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
                 throw;
             }
         }
