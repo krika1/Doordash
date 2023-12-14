@@ -21,7 +21,7 @@ namespace Doordash.Data.Models.Addresses
             };
         }
 
-        public static AddressModel? ToModel(Address address)
+        public static AddressModel ToModel(Address address)
         {
             return address is null ? null : new AddressModel
             {

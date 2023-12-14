@@ -85,5 +85,19 @@ namespace Doordash.Bussines.Services
 
             await _resturantRepository.UpdateResturant(resturant);
         }
+
+        public async Task<ResturantModel> GetResturantByIdAsync(Guid resturantId)
+        {
+            var resturant = await _resturantRepository.GetSingleResturant(resturantId);
+
+            if (resturant is null) return null;
+
+            var resturantModel = ResturantFactory.ToModel(resturant);
+            var resturantAddress = await GetResturantAddress(resturantId);
+
+            resturantModel.Address = resturantAddress;
+
+            return resturantModel;
+        }
     }
 }
