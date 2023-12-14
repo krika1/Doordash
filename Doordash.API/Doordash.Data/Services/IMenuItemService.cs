@@ -10,5 +10,7 @@ namespace Doordash.Data.Services
     public interface IMenuItemService
     {
         Task<MenuItemModel> CreateMenuItemAsync(Guid resturantId, CreateMenuItemRequest request);
+
+        Task<IEnumerable<MenuItemModel>> GetAllResturantMenuItemsAsync(Guid resturantId);
     }
 }

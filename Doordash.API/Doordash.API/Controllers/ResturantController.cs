@@ -1,6 +1,5 @@
 ﻿using Doordash.Data.Exceptions;
 using Doordash.Data.Models;
-using Doordash.Data.Models.MenuItems;
 using Doordash.Data.Models.Resturants;
 using Doordash.Data.Services;
 using Microsoft.AspNetCore.Http;
@@ -17,12 +16,10 @@ namespace Doordash.API.Controllers
     public class ResturantController : ControllerBase
     {
         private readonly IResturantService _resturantService;
-        private readonly IMenuItemService _menuItemService;
 
-        public ResturantController(IResturantService resturantService, IMenuItemService menuItemService)
+        public ResturantController(IResturantService resturantService)
         {
             _resturantService = resturantService;
-            _menuItemService = menuItemService;
         }
 
         [HttpPost, Route("resturants")]
@@ -49,7 +46,6 @@ namespace Doordash.API.Controllers
                 {
                     StatusCode = StatusCodes.Status500InternalServerError
                 };
-                throw;
             }
         }
 
@@ -77,7 +73,6 @@ namespace Doordash.API.Controllers
                 {
                     StatusCode = StatusCodes.Status500InternalServerError
                 };
-                throw;
             }
         }
 
@@ -106,7 +101,6 @@ namespace Doordash.API.Controllers
                 {
                     StatusCode = StatusCodes.Status500InternalServerError
                 };
-                throw;
             }
             catch (Exception ex)
             {
@@ -120,7 +114,6 @@ namespace Doordash.API.Controllers
                 {
                     StatusCode = StatusCodes.Status500InternalServerError
                 };
-                throw;
             }
         }
 
@@ -149,7 +142,6 @@ namespace Doordash.API.Controllers
                 {
                     StatusCode = StatusCodes.Status500InternalServerError
                 };
-                throw;
             }
             catch (Exception ex)
             {
@@ -163,52 +155,6 @@ namespace Doordash.API.Controllers
                 {
                     StatusCode = StatusCodes.Status500InternalServerError
                 };
-                throw;
-            }
-        }
-
-        [HttpPost, Route("resturants/{resturantId}/menu-items")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<MenuItemModel>> CreateMenuItemAsync([FromRoute] Guid resturantId, CreateMenuItemRequest request)
-        {
-            try
-            {
-                await _resturantService.GetResturantByIdAsync(resturantId);
-
-                var menuItem = await _menuItemService.CreateMenuItemAsync(resturantId, request);
-
-                return Ok(menuItem);
-            }
-            catch (NotFoundException ex)
-            {
-                var errorModel = new ErrorModel
-                {
-                    Title = "Resturant not found.",
-                    Details = ex.Message,
-                    StatusCode = StatusCodes.Status404NotFound
-                };
-                return new ObjectResult(errorModel)
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError
-                };
-                throw;
-            }
-            catch (Exception ex)
-            {
-                var errorModel = new ErrorModel
-                {
-                    Title = "Create Menu item Failed",
-                    Details = ex.Message,
-                    StatusCode = StatusCodes.Status500InternalServerError
-                };
-                return new ObjectResult(errorModel)
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError
-                };
-                throw;
             }
         }
     }
