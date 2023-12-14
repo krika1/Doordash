@@ -4,6 +4,8 @@ using Doordash.Data.Models.Addresses;
 using Doordash.Data.Models.Resturants;
 using Doordash.Data.Services;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -22,37 +24,60 @@ namespace Doordash.Bussines.Services
 
         public async Task<ResturantModel> CreateResturantAsync(CreateResturantRequest request)
         {
-            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+            try
             {
-                try
-                {
-                    var resturantDomain = ResturantFactory.ToDomain(request);
+                var resturantDomain = ResturantFactory.ToDomain(request);
 
-                    var createdResturant = await _resturantRepository.CreateResturant(resturantDomain).ConfigureAwait(false);
+                var createdResturant = await _resturantRepository.CreateResturant(resturantDomain).ConfigureAwait(false);
 
-                    var addressDomain = AddressFactory.ToDomain(request, createdResturant.Id);
+                var addressDomain = AddressFactory.ToDomain(request, createdResturant.Id);
 
-                    var createdAddress = await _addressRepository.CreateAddress(addressDomain).ConfigureAwait(false);
+                var createdAddress = await _addressRepository.CreateAddress(addressDomain).ConfigureAwait(false);
 
-                    await AttachAddressIdToResturant(createdResturant, createdAddress.Id);
+                await AttachAddressIdToResturant(createdResturant, createdAddress.Id);
 
-                    transaction.Complete();
+                transaction.Complete();
 
-                    var resturantModel = ResturantFactory.ToModel(createdResturant);
-                    var addressModel = AddressFactory.ToModel(createdAddress);
+                var resturantModel = ResturantFactory.ToModel(createdResturant);
+                var addressModel = AddressFactory.ToModel(createdAddress);
 
-                    resturantModel.Address = addressModel;
+                resturantModel.Address = addressModel;
 
-                    return resturantModel;
-                }
-                catch (Exception)
-                {
-                    transaction.Dispose();
-                    throw;
-                }
+                return resturantModel;
+            }
+            catch (Exception)
+            {
+                transaction.Dispose();
+                throw;
             }
         }
 
+        public async Task<IEnumerable<ResturantModel>> GetAllResturantsAsync()
+        {
+            var resturants = await _resturantRepository.GetAllResturants();
+
+            var resturantModels = resturants
+                .Select(resturant => ResturantFactory
+                .ToModel(resturant))
+                .ToList();
+
+            foreach (var resturantModel in resturantModels)
+            {
+                var addressModel = await GetResturantAddress(resturantModel.Id);
+
+                resturantModel.Address = addressModel;
+            }
+
+            return resturantModels;
+        }
+
+        private async Task<AddressModel> GetResturantAddress(Guid resturantId)
+        {
+            var resturantAddress = await _addressRepository.GetAddressByResturantId(resturantId);
+
+            return AddressFactory.ToModel(resturantAddress);
+        }
 
         private async Task AttachAddressIdToResturant(Resturant resturant, Guid addressId)
         {

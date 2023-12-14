@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Doordash.API.Controllers
@@ -18,6 +19,7 @@ namespace Doordash.API.Controllers
         {
             _resturantService = resturantService;
         }
+
         [HttpPost, Route("resturants")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -29,6 +31,24 @@ namespace Doordash.API.Controllers
                 var resturantModel = await _resturantService.CreateResturantAsync(request);
 
                 return Ok(resturantModel);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet, Route("resturants")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<ResturantModel>>> GetResturantsAsync()
+        {
+            try
+            {
+                var resturantModels = await _resturantService.GetAllResturantsAsync();
+
+                return Ok(resturantModels);
             }
             catch (Exception)
             {

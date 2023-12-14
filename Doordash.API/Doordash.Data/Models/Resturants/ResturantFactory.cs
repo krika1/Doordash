@@ -19,14 +19,14 @@ namespace Doordash.Data.Models.Resturants
 
         public static ResturantModel ToModel(Resturant resturant)
         {
-            return new ResturantModel
+            return resturant is null ? null : new ResturantModel
             {
-               DeletedOn = resturant.DeletedOn,
-               Description = resturant.Description,
-               CreatedOn = resturant.CreatedOn,
-               Id  = resturant.Id,
-               Name = resturant.Name,
-               Type = resturant.Type
+                DeletedOn = resturant.DeletedOn,
+                Description = resturant.Description,
+                CreatedOn = resturant.CreatedOn,
+                Id = resturant.Id,
+                Name = resturant.Name,
+                Type = resturant.Type
             };
         }
     }
