@@ -9,5 +9,7 @@ namespace Doordash.Data.Interfaces
         Task<Address> CreateAddress(Address address);
 
         Task<Address> GetAddressByResturantId(Guid resturantId);
+
+        Task DeleteAddress(Guid addressId);
     }
 }

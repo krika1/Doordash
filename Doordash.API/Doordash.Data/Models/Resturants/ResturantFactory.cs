@@ -17,6 +17,20 @@ namespace Doordash.Data.Models.Resturants
             };
         }
 
+        public static Resturant ToDomain(ResturantModel model)
+        {
+            return new Resturant
+            {
+               AddressId = model.Address.AddressId,
+               DeletedOn = model.DeletedOn,
+               Description = model.Description,
+               CreatedOn = model.CreatedOn,
+               Id = model.Id,
+               Name = model.Name,
+               Type = model.Type
+            };
+        }
+
         public static ResturantModel ToModel(Resturant resturant)
         {
             return resturant is null ? null : new ResturantModel
