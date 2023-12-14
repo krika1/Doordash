@@ -68,7 +68,7 @@ namespace Doordash.Persistance.Interfaces
 
             try
             {
-                var resturant = await _database.Resturants.AsNoTracking().Include(resturant => resturant.Address).FirstOrDefaultAsync(resturant => resturant.Id.Equals(resturantId));
+                var resturant = await _database.Resturants.Include(resturant => resturant.Address).FirstOrDefaultAsync(resturant => resturant.Id.Equals(resturantId) && resturant.DeletedOn == null);
 
                 return resturant;
             }
