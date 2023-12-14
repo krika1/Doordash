@@ -56,6 +56,23 @@ namespace Doordash.Persistance.Interfaces
             }
         }
 
+        public async Task<Resturant> GetSingleResturant(Guid resturantId)
+        {
+            _logger.LogInformation($"Getting resturant with id: {resturantId}.");
+
+            try
+            {
+                var resturant = await _database.Resturants.FirstOrDefaultAsync(resturant => resturant.Id.Equals(resturantId));
+
+                return resturant;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
         public async Task UpdateResturant(Resturant resturant)
         {
             _logger.LogInformation($"Updating resturant with id: {resturant.Id}.");

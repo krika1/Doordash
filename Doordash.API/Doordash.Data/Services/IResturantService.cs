@@ -1,4 +1,5 @@
 ﻿using Doordash.Data.Models.Resturants;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,5 +10,7 @@ namespace Doordash.Data.Services
         Task<ResturantModel> CreateResturantAsync(CreateResturantRequest request);
 
         Task<IEnumerable<ResturantModel>> GetAllResturantsAsync();
+
+        Task<ResturantModel> GetResturantByIdAsync(Guid resturantId);
     }
 }
