@@ -9,7 +9,7 @@ namespace Doordash.Data.Interfaces
     {
         Task<Resturant> CreateResturant(Resturant resturant);
 
-        Task<IEnumerable<Resturant>> GetAllResturants();
+        Task<IEnumerable<Resturant>> GetAllResturants(string town);
 
         Task<Resturant> GetSingleResturant(Guid resturantId);
 

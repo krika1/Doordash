@@ -9,7 +9,7 @@ namespace Doordash.Data.Services
     {
         Task<ResturantModel> CreateResturantAsync(CreateResturantRequest request);
 
-        Task<IEnumerable<ResturantModel>> GetAllResturantsAsync();
+        Task<IEnumerable<ResturantModel>> GetAllResturantsAsync(string town);
 
         Task DeleteResturantAsync(ResturantModel model);
 
