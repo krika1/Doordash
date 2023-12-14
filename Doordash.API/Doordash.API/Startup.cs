@@ -30,6 +30,8 @@ namespace Doordash.API
 
             services.AddScoped<IResturantService, ResturantService>();
             services.AddScoped<IRestrurantRepository, ResturantRepository>();
+            services.AddScoped<IMenuItemService, MenuItemService>();
+            services.AddScoped<IMenuItemRepository, MenuItemRepository>();
             services.AddScoped<IAddressRepository, AddressRepository>();
 
             services.AddControllers();
