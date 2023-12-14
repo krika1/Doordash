@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Doordash.Data.Entities
 {
@@ -19,5 +20,7 @@ namespace Doordash.Data.Entities
         public Address Address { get; set; }
 
         public Guid AddressId { get; set; }
+
+        public IEnumerable<MenuItem> MenuItems { get; set; }
     }
 }

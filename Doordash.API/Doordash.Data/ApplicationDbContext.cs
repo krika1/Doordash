@@ -15,11 +15,32 @@ namespace Doordash.Data
 
         public DbSet<Resturant> Resturants { get; set; }
 
+        public DbSet<MenuItem> MenuItems { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             AddressesModelCreate(modelBuilder);
+            MenuItemsModelCreate(modelBuilder);
             ResturantsModelCreate(modelBuilder);
             base.OnModelCreating(modelBuilder);
+        }
+
+        private void MenuItemsModelCreate(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<MenuItem>()
+                .HasKey(m => m.Id);
+
+            modelBuilder.Entity<MenuItem>()
+                .Property(m => m.Name)
+                .IsRequired();
+
+            modelBuilder.Entity<MenuItem>()
+                .Property(m => m.Description)
+                .IsRequired();
+
+            modelBuilder.Entity<MenuItem>()
+                .Property(m => m.Price)
+                .IsRequired();
         }
 
         private void ResturantsModelCreate(ModelBuilder modelBuilder)
@@ -47,6 +68,11 @@ namespace Doordash.Data
                 .HasOne(r => r.Address)
                 .WithOne(a => a.Resturant)
                 .HasForeignKey<Address>(r => r.ResturantId);
+
+            modelBuilder.Entity<Resturant>()
+                .HasMany(r => r.MenuItems)
+                .WithOne(m => m.Resturant)
+                .HasForeignKey(m => m.ResturantId);
         }
 
         private void AddressesModelCreate(ModelBuilder modelBuilder)
