@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Doordash.Persistance.Interfaces
@@ -45,7 +46,7 @@ namespace Doordash.Persistance.Interfaces
 
             try
             {
-                var resturants = await _database.Resturants.AsNoTracking().ToListAsync();
+                var resturants = await _database.Resturants.Where(resturant => resturant.DeletedOn == null).AsNoTracking().ToListAsync();
 
                 return resturants;
             }
@@ -62,7 +63,7 @@ namespace Doordash.Persistance.Interfaces
 
             try
             {
-                var resturant = await _database.Resturants.FirstOrDefaultAsync(resturant => resturant.Id.Equals(resturantId));
+                var resturant = await _database.Resturants.AsNoTracking().FirstOrDefaultAsync(resturant => resturant.Id.Equals(resturantId));
 
                 return resturant;
             }

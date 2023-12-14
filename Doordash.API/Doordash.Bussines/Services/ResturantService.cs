@@ -99,5 +99,14 @@ namespace Doordash.Bussines.Services
 
             return resturantModel;
         }
+
+        public async Task DeleteResturantAsync(ResturantModel model)
+        {
+            var resturant = ResturantFactory.ToDomain(model); 
+            resturant.DeletedOn = DateTime.Now;
+
+            await _addressRepository.DeleteAddress(resturant.AddressId);
+            await _resturantRepository.UpdateResturant(resturant);
+        }
     }
 }

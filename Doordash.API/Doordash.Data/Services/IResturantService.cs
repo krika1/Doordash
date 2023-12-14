@@ -11,6 +11,8 @@ namespace Doordash.Data.Services
 
         Task<IEnumerable<ResturantModel>> GetAllResturantsAsync();
 
+        Task DeleteResturantAsync(ResturantModel model);
+
         Task<ResturantModel> GetResturantByIdAsync(Guid resturantId);
     }
 }

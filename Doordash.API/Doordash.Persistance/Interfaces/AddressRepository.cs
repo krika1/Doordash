@@ -37,6 +37,25 @@ namespace Doordash.Persistance.Interfaces
             }
         }
 
+        public async Task DeleteAddress(Guid addressId)
+        {
+            _logger.LogInformation($"Deleting address with address Id: {addressId}.");
+
+            try
+            {
+                var address = await _database.Addresses.FirstOrDefaultAsync(address => address.Id.Equals(addressId));
+
+                _database.Addresses.Remove(address);
+
+                await _database.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
         public async Task<Address> GetAddressByResturantId(Guid resturantId)
         {
             _logger.LogInformation($"Getting address with for resturant with resturant Id: {resturantId}.");

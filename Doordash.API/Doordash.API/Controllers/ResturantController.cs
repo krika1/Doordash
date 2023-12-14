@@ -76,5 +76,28 @@ namespace Doordash.API.Controllers
                 throw;
             }
         }
+
+        [HttpDelete, Route("resturants/{resturantId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> DeleteResturantByIdAsync([FromRoute] Guid resturantId)
+        {
+            try
+            {
+                var resturantModel = await _resturantService.GetResturantByIdAsync(resturantId);
+
+                if (resturantModel is null) return NotFound();
+
+                await _resturantService.DeleteResturantAsync(resturantModel);
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
