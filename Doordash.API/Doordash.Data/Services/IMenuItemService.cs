@@ -1,8 +1,6 @@
 ﻿using Doordash.Data.Models.MenuItems;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Doordash.Data.Services
@@ -13,6 +11,8 @@ namespace Doordash.Data.Services
 
         Task<IEnumerable<MenuItemModel>> GetAllResturantMenuItemsAsync(Guid resturantId);
 
-        Task<MenuItemModel> GetSingleMenuItem(Guid menuItemId);
+        Task<MenuItemModel> GetSingleMenuItemAsync(Guid menuItemId);
+
+        Task DeleteMenuItemAsync(Guid menuItemId);
     }
 }
