@@ -9,6 +9,10 @@ namespace Doordash.Data.Interfaces
     {
         Task<MenuItem> CreateMenuItem(MenuItem menuItem);
 
+        Task<MenuItem> GetSingleMenuItem(Guid menuItemId);
+
+        Task DeleteSingleMenuItem(Guid menuItemId);
+
         Task<IEnumerable<MenuItem>> GetAllResturantMenuItems(Guid resturantId);
     }
 }

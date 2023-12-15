@@ -71,7 +71,7 @@ namespace Doordash.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<MenuItemModel>>> GetAllResturantMenuItemsAsybc([FromRoute] Guid resturantId)
+        public async Task<ActionResult<IEnumerable<MenuItemModel>>> GetAllResturantMenuItemsAsync([FromRoute] Guid resturantId)
         {
             try
             {
@@ -99,6 +99,48 @@ namespace Doordash.API.Controllers
                 var errorModel = new ErrorModel
                 {
                     Title = "Get all Menu item Failed",
+                    Details = ex.Message,
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+                return new ObjectResult(errorModel)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+            }
+        }
+
+        [HttpGet, Route("resturants/{resturantId}/menu-items/{menuItemId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<MenuItemModel>>> GetSingleMenuItemAsync([FromRoute] Guid resturantId, [FromRoute] Guid menuItemId)
+        {
+            try
+            {
+                await _resturantService.GetResturantByIdAsync(resturantId);
+
+                var menuItem = await _menuItemService.GetSingleMenuItem(menuItemId);
+
+                return Ok(menuItem);
+            }
+            catch (NotFoundException ex)
+            {
+                var errorModel = new ErrorModel
+                {
+                    Details = ex.Message,
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+                return new ObjectResult(errorModel)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+            }
+            catch (Exception ex)
+            {
+                var errorModel = new ErrorModel
+                {
+                    Title = "Get Single Menu item Failed",
                     Details = ex.Message,
                     StatusCode = StatusCodes.Status500InternalServerError
                 };

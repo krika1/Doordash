@@ -1,4 +1,5 @@
-﻿using Doordash.Data.Interfaces;
+﻿using Doordash.Data.Exceptions;
+using Doordash.Data.Interfaces;
 using Doordash.Data.Models.MenuItems;
 using Doordash.Data.Services;
 using System;
@@ -31,6 +32,15 @@ namespace Doordash.Bussines.Services
             var menuItems = await _menuItemRepository.GetAllResturantMenuItems(resturantId);
 
             return menuItems.Select(menuItem => MenuItemFactory.ToModel(menuItem));
+        }
+
+        public async Task<MenuItemModel> GetSingleMenuItem(Guid menuItemId)
+        {
+            var menuItem = await _menuItemRepository.GetSingleMenuItem(menuItemId);
+
+            if (menuItem is null) throw new NotFoundException($"Menu Item with id: {menuItemId} not found.");
+
+            return MenuItemFactory.ToModel(menuItem);
         }
     }
 }

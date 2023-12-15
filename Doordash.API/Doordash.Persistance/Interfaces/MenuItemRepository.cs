@@ -39,6 +39,25 @@ namespace Doordash.Persistance.Interfaces
             }
         }
 
+        public async Task DeleteSingleMenuItem(Guid menuItemId)
+        {
+            _logger.LogInformation($"Deleting menu item with Id: {menuItemId}.");
+
+            try
+            {
+                var menuItem = await _database.MenuItems.FirstOrDefaultAsync(menuItem => menuItem.Id.Equals(menuItemId));
+
+                _database.MenuItems.Remove(menuItem);
+
+                await _database.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
         public async Task<IEnumerable<MenuItem>> GetAllResturantMenuItems(Guid resturantId)
         {
             _logger.LogInformation($"Getting all menu items for resturant with id: {resturantId}.");
@@ -48,6 +67,23 @@ namespace Doordash.Persistance.Interfaces
                 var menuItems = _database.MenuItems.AsNoTracking().Where(menuItem => menuItem.ResturantId.Equals(resturantId));
 
                 return await menuItems.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<MenuItem> GetSingleMenuItem(Guid menuItemId)
+        {
+            _logger.LogInformation($"Getting menu item with id: {menuItemId}.");
+
+            try
+            {
+                var item = await _database.MenuItems.FirstOrDefaultAsync(menuItem => menuItem.Id.Equals(menuItemId));
+
+                return item;
             }
             catch (Exception ex)
             {
