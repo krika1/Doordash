@@ -16,11 +16,13 @@ namespace Doordash.Bussines.Services
     {
         private readonly IRestrurantRepository _resturantRepository;
         private readonly IAddressRepository _addressRepository;
+        private readonly IMenuItemRepository _menuItemRepository;
 
-        public ResturantService(IRestrurantRepository resturantRepository, IAddressRepository addressRepository)
+        public ResturantService(IRestrurantRepository resturantRepository, IAddressRepository addressRepository, IMenuItemRepository menuItemRepository)
         {
             _resturantRepository = resturantRepository;
             _addressRepository = addressRepository;
+            _menuItemRepository = menuItemRepository;
         }
 
         public async Task<ResturantModel> CreateResturantAsync(CreateResturantRequest request)
@@ -86,6 +88,13 @@ namespace Doordash.Bussines.Services
         {
             var resturant = await GetResturantById(resturantId);
             resturant.DeletedOn = DateTime.Now;
+
+            var resturantMenu = await _menuItemRepository.GetAllResturantMenuItems(resturantId);
+
+            foreach (var menuItem in resturantMenu)
+            {
+                await _menuItemRepository.DeleteSingleMenuItem(menuItem.Id);
+            }
 
             await _addressRepository.DeleteAddress(resturant.AddressId);
             await _resturantRepository.UpdateResturant(resturant);

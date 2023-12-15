@@ -1,4 +1,5 @@
-﻿using Doordash.Data.Exceptions;
+﻿using Doordash.Data.Entities;
+using Doordash.Data.Exceptions;
 using Doordash.Data.Interfaces;
 using Doordash.Data.Models.MenuItems;
 using Doordash.Data.Services;
@@ -27,6 +28,13 @@ namespace Doordash.Bussines.Services
             return MenuItemFactory.ToModel(createdMenuItem);
         }
 
+        public async Task DeleteMenuItemAsync(Guid menuItemId)
+        {
+            await GetSingleMenuItem(menuItemId);
+
+            await _menuItemRepository.DeleteSingleMenuItem(menuItemId);
+        }
+
         public async Task<IEnumerable<MenuItemModel>> GetAllResturantMenuItemsAsync(Guid resturantId)
         {
             var menuItems = await _menuItemRepository.GetAllResturantMenuItems(resturantId);
@@ -34,13 +42,20 @@ namespace Doordash.Bussines.Services
             return menuItems.Select(menuItem => MenuItemFactory.ToModel(menuItem));
         }
 
-        public async Task<MenuItemModel> GetSingleMenuItem(Guid menuItemId)
+        public async Task<MenuItemModel> GetSingleMenuItemAsync(Guid menuItemId)
+        {
+            var menuItem = await GetSingleMenuItem(menuItemId);
+
+            return MenuItemFactory.ToModel(menuItem);
+        }
+
+        private async Task<MenuItem> GetSingleMenuItem(Guid menuItemId)
         {
             var menuItem = await _menuItemRepository.GetSingleMenuItem(menuItemId);
 
             if (menuItem is null) throw new NotFoundException($"Menu Item with id: {menuItemId} not found.");
 
-            return MenuItemFactory.ToModel(menuItem);
+            return menuItem;
         }
     }
 }

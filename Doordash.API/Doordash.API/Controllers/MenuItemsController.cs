@@ -150,5 +150,47 @@ namespace Doordash.API.Controllers
                 };
             }
         }
+
+        [HttpDelete, Route("resturants/{resturantId}/menu-items/{menuItemId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> DeleteMenuItemByIdAsync([FromRoute] Guid resturantId, [FromRoute] Guid menuItemId)
+        {
+            try
+            {
+                await _resturantService.GetResturantByIdAsync(resturantId);
+
+                await _menuItemService.DeleteMenuItemAsync(menuItemId);
+
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+                var errorModel = new ErrorModel
+                {
+                    Details = ex.Message,
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+                return new ObjectResult(errorModel)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+            }
+            catch (Exception ex)
+            {
+                var errorModel = new ErrorModel
+                {
+                    Title = "Delete Single Menu item Failed",
+                    Details = ex.Message,
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+                return new ObjectResult(errorModel)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+            }
+        }
     }
 }
